@@ -18,4 +18,4 @@ Required Libraries:
 playwright
 BeautifulSoup
 Discord
-discort.ext
+discord.ext
