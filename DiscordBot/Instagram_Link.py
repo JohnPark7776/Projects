@@ -1,19 +1,26 @@
 import asyncio
 from playwright.async_api import async_playwright, TimeoutError as TE
 from bs4 import BeautifulSoup as bs
-import time
+import requests
 
-results = set()
+
+results = {}
 def parse_item(html_page):
-    """Parses through a string to grab Img Src
+    """Parses through a string to grab Img Src or Video Src
 
     Args:
         html_page (str): html str
     """
     soup = bs(html_page, 'html.parser')
     data = soup.find_all('img')
-    for photo in data:
-        results.add(photo['src'])
+    for item in data:
+        image = requests.get(item['src'])
+        results[image.content] = 'img'
+    data = soup.find_all('video')
+    for item in data:
+        video = requests.get(item['src'])
+        results[video.content] = 'vid'
+
 
 async def start_this(link):
     """Opens a browser to selected Instagram Post
@@ -37,19 +44,24 @@ async def start_this(link):
                 for i in range(10):
                     try:
                         next_page = page.locator('div._aao_').get_by_role('button',name='Next')
-                        page.set_default_timeout(2000)
+                        page.set_default_timeout(500)
                         for li in await page.locator('div._aao_').filter(has=page.get_by_role('listitem')).all():
                             parse_item(await li.inner_html())
                         await next_page.click()
-                        time.sleep(.55)
                     except TE:
                         break
             await browser.close()
         except TE:
+            await page.reload(wait_until='networkidle')
             try:
                 content = await page.locator('article').locator('div._aagv').inner_html()
             except:
                 content = await page.locator('div._aagv').inner_html()
-            parse_item(content)
+            parse_item(await content)
+            try:
+                content = await page.locator('x5yr21d x1uhb9sk xh8yej3').inner_html()
+            except:
+                pass
+            parse_item(await content)
             await browser.close()
     return results
