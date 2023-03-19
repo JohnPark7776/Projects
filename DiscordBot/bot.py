@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-import os
 from Instagram_Link import start_this
+from io import BytesIO
 
 default_prefix = '$'
 
@@ -17,34 +17,53 @@ def run_discord_bot():
 
   @bot_client.command()
   async def ig(message, arg):
-    ig_link = str(arg)
-    try:
-      response = await start_this(ig_link)
-      for i in response:
-        await message.channel.send(i)
-    except Exception as e:
-      print(e)
+      """Prints out Instagram Img from post
+
+      Args:
+          message (_discord_): {default_prefix}ig
+          arg (_discord_): Ig post URL
+      """
+      ig_link = str(arg)
+      try:
+          response = await start_this(ig_link)
+          temp_file = []
+          for num, output in enumerate(response):
+            if response[output] == 'img':
+              filename = f"image{num}.jpg"
+              temp_file.append(discord.File(BytesIO(output), filename=filename))
+            elif response[output] == 'vid':
+              filename = f"video{num}.mp4"
+              temp_file.append(discord.File(BytesIO(output), filename=filename))
+          await message.channel.send(files=temp_file)
+      except Exception as e:
+          print(e)
   
   @bot_client.command()
   async def prefix(message, arg):
+    """Changes the prefix
+
+    Args:
+        message (_discord_): {default_prefix}prefix
+        arg (_discord_): New Prefix
+    """
     default_prefix = str(arg)
     bot_client.command_prefix = default_prefix
     await message.channel.send(f'The new prefix is now {default_prefix}.')
 
+  @bot_client.command()
+  async def quit(message):
+    """Turns off the bot
+
+    Args:
+        message (_discord_): Client.close()
+    """
+    bot_client.close()
+
+
+
+
   with open ('C:/Users/SexyKoreanese/Desktop/key.txt') as key:
     temp = key.read()
 
+  bot_client.run(temp)
 
-
-
-
-
-
-
-
-  try:
-    bot_client.run(temp)
-  except discord.errors.HTTPException:
-    print("\n\n\nBLOCKED BY RATE LIMITS\nRESTARTING NOW\n\n\n")
-    os.system("restarter.py")
-    os.system('kill 1')
