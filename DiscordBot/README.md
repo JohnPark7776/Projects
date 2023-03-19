@@ -1,8 +1,5 @@
-Original plan to create a bot which can webscrape Instagram. 
+Currently can only webscrape Instagram.
 
-Did not have the necessary skills to webscrape past basic HTML.parsing. It requires knowledge of accessing Server SQL to access the video/reels of instagram posts.
-
-Did found a workaround utilizing gallery-dl but was unable to find a suitable cheap/free way to host discord bot that allows playwright.
 
 
 How it works:
@@ -12,6 +9,8 @@ Instagram_Link.py:
   
   Reason I went this route because I did not want to create methods/functions to "manually" create API requests and just make a Browser create all the correct
   API requests/URLs for me so all I had to do was parse through the HTML and find the Images.
+  
+  I used Instagram as a practice ground as my final goal was to get picture, videos, and posts from weverse and then post it through Discord.
   
 
 Required Libraries:
