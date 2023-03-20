@@ -60,7 +60,7 @@ async def start_this(link):
                 if await page.is_enabled('div._aagv',timeout=1000):
                     content = await page.locator('div._aagv').inner_html()
             except TE:
-                content = await page.locator('div.x5yr21d x1uhb9sk xh8yej3').inner_html()
-            parse_item(await content)
+                content = await page.locator(".x1lliihq > div > div > div").inner_html()
+            parse_item(content)
             await browser.close()
             return results
